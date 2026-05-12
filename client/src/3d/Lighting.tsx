@@ -2,93 +2,99 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-interface Props {
-  votingPhase?: boolean
-}
+interface Props { votingPhase?: boolean }
 
 export default function Lighting({ votingPhase = false }: Props) {
-  const flickerRef = useRef<THREE.PointLight>(null)
+  const mainLampRef = useRef<THREE.PointLight>(null)
   const t = useRef(0)
 
   useFrame((_, delta) => {
     t.current += delta
-    if (flickerRef.current) {
-      // Subtle candle-like flicker on the main lamp
-      flickerRef.current.intensity = votingPhase
-        ? 0.3 + Math.sin(t.current * 5.3) * 0.04
-        : 2.2 + Math.sin(t.current * 1.1) * 0.15 + Math.sin(t.current * 3.7) * 0.05
+    if (mainLampRef.current) {
+      mainLampRef.current.intensity = votingPhase
+        ? 1.8 + Math.sin(t.current * 6) * 0.12
+        : 3.5 + Math.sin(t.current * 0.9) * 0.2
     }
   })
 
   return (
     <>
-      {/* Strong ambient so nothing is pitch black */}
-      <ambientLight intensity={votingPhase ? 0.35 : 0.65} color="#c8832a" />
+      {/* STRONG ambient — no pure blacks */}
+      <ambientLight intensity={votingPhase ? 0.55 : 1.1} color="#ffe4b8" />
 
-      {/* Main overhead warm lamp above table */}
+      {/* Main overhead lamp — very bright warm */}
       <pointLight
-        ref={flickerRef}
-        position={[0, 3.2, 0]}
-        intensity={2.2}
-        color="#ffb347"
-        distance={14}
-        decay={1.5}
+        ref={mainLampRef}
+        position={[0, 3.6, 0]}
+        intensity={3.5}
+        color="#ffe08a"
+        distance={18}
+        decay={1.2}
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.001}
       />
 
-      {/* Wide fill light from above — prevents characters going dark */}
+      {/* Wide top-down fill — ensures top surfaces are lit */}
       <directionalLight
-        position={[0, 8, 2]}
-        intensity={votingPhase ? 0.3 : 0.9}
-        color="#e8a060"
+        position={[2, 10, 3]}
+        intensity={votingPhase ? 0.5 : 1.4}
+        color="#fff5e0"
         castShadow={false}
       />
 
-      {/* Front fill so camera-facing sides are lit */}
+      {/* Front fill — faces the camera direction, lights player faces */}
       <pointLight
-        position={[0, 1.8, 4.5]}
-        intensity={votingPhase ? 0.2 : 0.8}
-        color="#d4884a"
+        position={[0, 1.6, 5.5]}
+        intensity={votingPhase ? 0.5 : 1.8}
+        color="#ffd090"
+        distance={10}
+        decay={1.5}
+      />
+
+      {/* LEFT side — blue-green cool accent to separate from warm */}
+      <pointLight
+        position={[-5.5, 2.2, 0]}
+        intensity={votingPhase ? 0.2 : 0.9}
+        color="#80c8ff"
         distance={9}
         decay={1.8}
       />
 
-      {/* Left wall sconce */}
+      {/* RIGHT side — warm peach */}
       <pointLight
-        position={[-4.2, 2.4, -1.5]}
-        intensity={votingPhase ? 0.15 : 0.7}
-        color="#ff9933"
-        distance={5}
-        decay={2}
+        position={[5.5, 2.2, 0]}
+        intensity={votingPhase ? 0.2 : 0.9}
+        color="#ffb060"
+        distance={9}
+        decay={1.8}
       />
 
-      {/* Right wall sconce */}
+      {/* Back wall uplight — illuminates rear wall so it's clearly visible */}
       <pointLight
-        position={[4.2, 2.4, -1.5]}
-        intensity={votingPhase ? 0.15 : 0.7}
-        color="#ff9933"
-        distance={5}
-        decay={2}
+        position={[0, 0.5, -5.5]}
+        intensity={votingPhase ? 0.3 : 1.1}
+        color="#c8882a"
+        distance={8}
+        decay={1.6}
       />
 
-      {/* Cool blue rim from behind to give depth */}
-      <directionalLight
-        position={[0, 4, -6]}
-        intensity={votingPhase ? 0.1 : 0.25}
-        color="#4466aa"
+      {/* Table surface key light — makes the table pop */}
+      <spotLight
+        position={[0, 5, 0]}
+        angle={0.4}
+        penumbra={0.6}
+        intensity={votingPhase ? 1.0 : 4.0}
+        color="#ffeebb"
+        distance={12}
+        decay={1.5}
+        castShadow={false}
+        target-position={[0, -0.4, 0] as unknown as THREE.Object3D}
       />
 
-      {/* Voting: red underlighting for tension */}
+      {/* Voting red underlighting */}
       {votingPhase && (
-        <pointLight
-          position={[0, -0.3, 0]}
-          intensity={1.2}
-          color="#cc1122"
-          distance={7}
-          decay={1.8}
-        />
+        <pointLight position={[0, -0.5, 0]} intensity={2.0} color="#cc1122" distance={8} decay={1.6} />
       )}
     </>
   )

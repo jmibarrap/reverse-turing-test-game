@@ -10,26 +10,21 @@ import Lighting from './Lighting'
 import Effects from './Effects'
 import FloatingIndicator from './FloatingIndicator'
 
-interface Props {
-  gameState: GameState
-}
+interface Props { gameState: GameState }
 
-// AI player seat angles around the table (as seen from camera)
-// Human sits at bottom (camera), others spread around the far side
 const SEAT_ANGLES = [
-  Math.PI,           // directly opposite — 12 o'clock
-  Math.PI * 0.58,    // left side — 10 o'clock
-  Math.PI * 1.42,    // right side — 2 o'clock
-  Math.PI * 0.14,    // near-left — 8 o'clock
+  Math.PI,        // directly opposite
+  Math.PI * 0.58, // upper-left
+  Math.PI * 1.42, // upper-right
+  Math.PI * 0.16, // near-left
 ]
-
-const TABLE_RADIUS = 2.75
+const TABLE_R = 2.8
 
 function FogSetup({ voting }: { voting: boolean }) {
   const { scene } = useThree()
   useEffect(() => {
-    // Subtle exponential fog — not too thick so scene stays visible
-    scene.fog = new THREE.FogExp2(voting ? '#0d0504' : '#130a04', voting ? 0.042 : 0.028)
+    // Very subtle fog — scene must stay visible
+    scene.fog = new THREE.FogExp2(voting ? '#100808' : '#1a1008', voting ? 0.032 : 0.020)
     return () => { scene.fog = null }
   }, [scene, voting])
   return null
@@ -37,11 +32,10 @@ function FogSetup({ voting }: { voting: boolean }) {
 
 export default function Scene({ gameState }: Props) {
   const { players, humanPlayerId, currentTurnPlayerId, phase } = gameState
-  const votingPhase = phase === 'voting'
-
+  const voting    = phase === 'voting'
   const aiPlayers = players.filter(p => p.id !== humanPlayerId)
-  const activeAI   = aiPlayers.find(p => p.id === currentTurnPlayerId)
-  const activeIdx  = activeAI ? aiPlayers.indexOf(activeAI) : -1
+  const activeAI  = aiPlayers.find(p => p.id === currentTurnPlayerId)
+  const activeIdx = activeAI ? aiPlayers.indexOf(activeAI) : -1
   const activeAngle = activeIdx >= 0 ? SEAT_ANGLES[activeIdx % SEAT_ANGLES.length] : null
 
   return (
@@ -50,32 +44,27 @@ export default function Scene({ gameState }: Props) {
       gl={{
         antialias: true,
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.1,   // boost overall exposure
+        toneMappingExposure: 1.25,   // brighter overall
       }}
-      style={{ position: 'absolute', inset: 0, background: '#130a04' }}
-      camera={{ fov: 62, near: 0.05, far: 80, position: [0, 0.95, 4.2] }}
+      style={{ position: 'absolute', inset: 0, background: '#1a1008' }}
+      camera={{ fov: 60, near: 0.05, far: 90, position: [0, 0.95, 4.2] }}
     >
-      <FogSetup voting={votingPhase} />
-      <HumanCamera activePlayerAngle={activeAngle} votingPhase={votingPhase} />
-      <Lighting votingPhase={votingPhase} />
-
+      <FogSetup voting={voting} />
+      <HumanCamera activePlayerAngle={activeAngle} votingPhase={voting} />
+      <Lighting votingPhase={voting} />
       <Room />
       <Table />
 
       {aiPlayers.map((player, i) => {
-        const angle    = SEAT_ANGLES[i % SEAT_ANGLES.length]
-        const x        = Math.sin(angle) * TABLE_RADIUS
-        const z        = -Math.cos(angle) * TABLE_RADIUS
+        const angle     = SEAT_ANGLES[i % SEAT_ANGLES.length]
+        const x         = Math.sin(angle) * TABLE_R
+        const z         = -Math.cos(angle) * TABLE_R
         const isSpeaking = player.id === currentTurnPlayerId && phase === 'conversation'
-
-        // Seat height: table surface - 0.5 so they look seated
-        const seatY = -0.18
-
         return (
           <group key={player.id}>
             <Player3D
               player={player}
-              position={[x, seatY, z]}
+              position={[x, -0.22, z]}
               rotation={-angle}
               isActive={player.id === currentTurnPlayerId}
               isEliminated={!player.isActive}
@@ -83,11 +72,7 @@ export default function Scene({ gameState }: Props) {
               seatIndex={i}
             />
             {isSpeaking && (
-              <FloatingIndicator
-                position={[x, seatY + 1.95, z]}
-                color="#00ff88"
-                pulse
-              />
+              <FloatingIndicator position={[x, -0.22 + 2.05, z]} color="#00ff88" pulse />
             )}
           </group>
         )

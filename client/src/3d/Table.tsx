@@ -1,79 +1,78 @@
 export default function Table() {
   return (
     <group position={[0, -0.5, 0]}>
-      {/* Main tabletop */}
+      {/* Main tabletop — rich medium brown, clearly different from floor */}
       <mesh position={[0, 0, 0]} receiveShadow castShadow>
-        <cylinderGeometry args={[2.6, 2.4, 0.14, 32]} />
-        <meshStandardMaterial color="#3a1f08" roughness={0.4} metalness={0.06} />
+        <cylinderGeometry args={[2.65, 2.45, 0.16, 36]} />
+        <meshStandardMaterial color="#6B3A1F" roughness={0.35} metalness={0.08} />
       </mesh>
-
-      {/* Table surface lighter */}
-      <mesh position={[0, 0.07, 0]}>
-        <cylinderGeometry args={[2.55, 2.55, 0.005, 32]} />
-        <meshStandardMaterial color="#4a2a0e" roughness={0.5} metalness={0.04} />
+      {/* Surface — slightly lighter highlight on top face */}
+      <mesh position={[0, 0.081, 0]}>
+        <cylinderGeometry args={[2.62, 2.62, 0.002, 36]} />
+        <meshStandardMaterial color="#7d4a28" roughness={0.42} metalness={0.06} />
       </mesh>
-
-      {/* Decorative inlay ring */}
-      <mesh position={[0, 0.075, 0]}>
-        <torusGeometry args={[1.8, 0.022, 8, 48]} />
-        <meshStandardMaterial color="#6a3a12" roughness={0.3} metalness={0.2} />
+      {/* Outer edge ring — gold trim */}
+      <mesh position={[0, 0, 0]}>
+        <torusGeometry args={[2.56, 0.032, 8, 52]} />
+        <meshStandardMaterial color="#c89040" roughness={0.22} metalness={0.55} />
       </mesh>
-
-      {/* Center inlay small ring */}
-      <mesh position={[0, 0.075, 0]}>
-        <torusGeometry args={[0.4, 0.012, 6, 24]} />
-        <meshStandardMaterial color="#6a3a12" roughness={0.3} metalness={0.2} />
+      {/* Decorative inlay ring 1 */}
+      <mesh position={[0, 0.083, 0]}>
+        <torusGeometry args={[1.9, 0.024, 7, 48]} />
+        <meshStandardMaterial color="#c89040" roughness={0.25} metalness={0.5} />
       </mesh>
-
-      {/* Table edge trim */}
-      <mesh position={[0, 0.0, 0]}>
-        <torusGeometry args={[2.52, 0.03, 6, 48]} />
-        <meshStandardMaterial color="#5a2e10" roughness={0.25} metalness={0.3} />
+      {/* Decorative inlay ring 2 */}
+      <mesh position={[0, 0.083, 0]}>
+        <torusGeometry args={[0.55, 0.016, 7, 28]} />
+        <meshStandardMaterial color="#c89040" roughness={0.25} metalness={0.5} />
       </mesh>
 
       {/* Pedestal */}
-      <mesh position={[0, -0.55, 0]} castShadow>
-        <cylinderGeometry args={[0.28, 0.42, 1.0, 14]} />
-        <meshStandardMaterial color="#2a1408" roughness={0.65} metalness={0.05} />
+      <mesh position={[0, -0.58, 0]} castShadow>
+        <cylinderGeometry args={[0.3, 0.46, 1.08, 14]} />
+        <meshStandardMaterial color="#4a2810" roughness={0.62} metalness={0.08} />
       </mesh>
-
-      {/* Base foot */}
-      <mesh position={[0, -1.08, 0]}>
-        <cylinderGeometry args={[1.05, 0.98, 0.08, 16]} />
-        <meshStandardMaterial color="#22100a" roughness={0.7} />
+      {/* Pedestal ring detail */}
+      <mesh position={[0, -0.25, 0]}>
+        <torusGeometry args={[0.32, 0.025, 7, 18]} />
+        <meshStandardMaterial color="#c89040" roughness={0.28} metalness={0.55} />
       </mesh>
-
-      {/* Foot spokes */}
+      {/* Base */}
+      <mesh position={[0, -1.14, 0]}>
+        <cylinderGeometry args={[1.1, 1.04, 0.09, 18]} />
+        <meshStandardMaterial color="#3a1e0a" roughness={0.7} />
+      </mesh>
+      {/* Base spokes */}
       {[0, 1, 2, 3].map(i => {
         const a = (i / 4) * Math.PI * 2
         return (
-          <mesh key={i} position={[Math.sin(a) * 0.55, -1.09, Math.cos(a) * 0.55]} rotation={[0, a, 0.1]}>
-            <boxGeometry args={[0.12, 0.06, 0.9]} />
-            <meshStandardMaterial color="#221008" roughness={0.7} />
+          <mesh key={i} position={[Math.sin(a) * 0.58, -1.15, Math.cos(a) * 0.58]}
+            rotation={[0, a, 0.12]}>
+            <boxGeometry args={[0.14, 0.065, 0.88]} />
+            <meshStandardMaterial color="#3a1e0a" roughness={0.72} />
           </mesh>
         )
       })}
 
-      {/* 4 chairs around table */}
+      {/* 4 Chairs — dark slate, clearly distinguishable from table */}
       {[0, 1, 2, 3].map(i => {
-        const angle = (i / 4) * Math.PI * 2 - Math.PI / 4
-        const r = 3.1
-        const x = Math.sin(angle) * r
-        const z = Math.cos(angle) * r
+        const a = (i / 4) * Math.PI * 2 - Math.PI / 4
+        const r = 3.15
+        const x = Math.sin(a) * r, z = Math.cos(a) * r
         return (
-          <group key={`chair${i}`} position={[x, 0, z]} rotation={[0, -angle, 0]}>
-            <mesh position={[0, -0.72, 0]} castShadow>
-              <boxGeometry args={[0.6, 0.08, 0.55]} />
-              <meshStandardMaterial color="#1a0e06" roughness={0.85} />
+          <group key={`ch${i}`} position={[x, 0, z]} rotation={[0, -a, 0]}>
+            <mesh position={[0, -0.74, 0]} castShadow>
+              <boxGeometry args={[0.62, 0.08, 0.56]} />
+              <meshStandardMaterial color="#2c3a44" roughness={0.8} />
             </mesh>
-            <mesh position={[0, -0.35, 0.25]} castShadow>
-              <boxGeometry args={[0.55, 0.72, 0.06]} />
-              <meshStandardMaterial color="#1a0e06" roughness={0.85} />
+            <mesh position={[0, -0.36, 0.26]} castShadow>
+              <boxGeometry args={[0.56, 0.74, 0.06]} />
+              <meshStandardMaterial color="#2c3a44" roughness={0.8} />
             </mesh>
-            {[[-0.25, -0.22], [0.25, -0.22], [-0.25, 0.22], [0.25, 0.22]].map(([lx, lz], li) => (
-              <mesh key={li} position={[lx, -1.01, lz]} castShadow>
-                <cylinderGeometry args={[0.024, 0.024, 0.6, 7]} />
-                <meshStandardMaterial color="#140b04" roughness={0.9} />
+            {([[-0.26, -0.22], [0.26, -0.22], [-0.26, 0.22], [0.26, 0.22]] as [number, number][]).map(([lx, lz], li) => (
+              <mesh key={li} position={[lx, -1.04, lz]} castShadow>
+                <cylinderGeometry args={[0.026, 0.026, 0.62, 7]} />
+                <meshStandardMaterial color="#1e2830" roughness={0.88} />
               </mesh>
             ))}
           </group>
