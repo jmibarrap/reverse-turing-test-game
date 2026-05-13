@@ -21,7 +21,10 @@ export async function callOllama(request: OllamaRequest): Promise<string> {
   try {
     const res = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Game-Key': 'MySecretGameKey2026',
+      },
       body: JSON.stringify({
         model: request.model,
         prompt: request.prompt,
@@ -58,7 +61,10 @@ export async function checkOllamaHealth(): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`, { signal: controller.signal });
+    const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`, {
+      headers: { 'X-Game-Key': 'MySecretGameKey2026' },
+      signal: controller.signal,
+    });
     clearTimeout(timeout);
     return res.ok;
   } catch {

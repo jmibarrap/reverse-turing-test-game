@@ -9,6 +9,7 @@ import {
   toClientState,
 } from './game/gameEngine';
 import { checkOllamaHealth } from './llm/ollamaClient';
+import { OLLAMA_BASE_URL } from './config/players';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -183,5 +184,5 @@ app.listen(PORT, () => {
   console.log(`\n🎮 Reverse Turing Arena — Backend`);
   console.log(`   Puerto  : http://localhost:${PORT}`);
   console.log(`   Modo    : ${process.env.DEMO_MODE === 'true' ? '🎭 DEMO (sin Ollama)' : '🤖 REAL (Ollama)'}`);
-  console.log(`   Ollama  : ${process.env.OLLAMA_URL || 'http://localhost:11434'}\n`);
+  console.log(`   Ollama  : ${OLLAMA_BASE_URL}\n`);
 });
