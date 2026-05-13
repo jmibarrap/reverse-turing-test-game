@@ -32,6 +32,7 @@ export interface VoteRecord {
   confidence: number;
   privateReason: string;
   isFallback?: boolean;
+  round: number;
 }
 
 export interface VoteCount {

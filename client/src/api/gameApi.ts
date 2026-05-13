@@ -50,4 +50,7 @@ export const gameApi = {
 
   /** Reset/clear current game */
   reset: () => request<{ ok: boolean }>('/game/reset', 'POST'),
+
+  /** Get detailed game report */
+  getReport: () => request<any>('/game/report'),
 };

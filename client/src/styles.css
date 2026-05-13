@@ -280,6 +280,29 @@ html, body, #root {
 .go-btn-secondary { background:rgba(255,255,255,0.04); border:1px solid var(--border); color:var(--text-dim); font-family:var(--mono); font-size:0.66rem; letter-spacing:0.13em; padding:13px 18px; border-radius:var(--r); cursor:pointer; transition:all 0.2s; }
 .go-btn-secondary:hover { border-color:var(--border-hi); color:var(--text); }
 
+/* ── REPORT MODAL ────────────────────────────────────────────────── */
+.report-modal-overlay { position:fixed; inset:0; z-index:100; background:rgba(8,3,1,0.85); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn 0.2s ease-out; }
+.report-modal-content { width:100%; max-width:700px; max-height:85vh; background:var(--surface2); border:1px solid var(--border-hi); border-radius:12px; display:flex; flex-direction:column; box-shadow:0 0 50px rgba(244,163,56,0.15); }
+.report-modal-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.report-modal-title { font-family:var(--mono); font-size:1.1rem; letter-spacing:0.15em; color:var(--accent); }
+.report-close-btn { background:none; border:none; color:var(--text-dim); font-size:1.5rem; cursor:pointer; transition:color 0.2s; line-height:1; }
+.report-close-btn:hover { color:var(--red); }
+.report-modal-body { padding:24px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; display:flex; flex-direction:column; gap:30px; }
+.report-round-card { background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:8px; padding:18px; }
+.report-round-header { font-family:var(--mono); font-size:0.9rem; color:var(--accent2); margin-bottom:12px; letter-spacing:0.1em; border-bottom:1px solid rgba(74,240,255,0.2); padding-bottom:8px; display:flex; justify-content:space-between; align-items:flex-end; }
+.report-round-elim { font-size:0.7rem; color:var(--red); border:1px solid rgba(255,50,50,0.3); padding:4px 8px; border-radius:4px; background:rgba(255,50,50,0.1); }
+.report-question { font-size:0.95rem; margin-bottom:16px; color:var(--text); line-height:1.4; }
+.report-answers-title { font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); margin-bottom:10px; letter-spacing:0.1em; }
+.report-answer-item { margin-bottom:8px; background:rgba(255,255,255,0.03); padding:10px; border-radius:6px; font-size:0.85rem; line-height:1.4; border-left:2px solid var(--text-dim); }
+.report-answer-name { font-family:var(--mono); font-size:0.65rem; color:var(--text-dim); margin-bottom:4px; font-weight:bold; }
+.report-votes-title { font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); margin-top:20px; margin-bottom:10px; letter-spacing:0.1em; }
+.report-vote-item { background:rgba(244,163,56,0.05); border:1px solid rgba(244,163,56,0.15); border-radius:6px; padding:12px; margin-bottom:10px; }
+.report-vote-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-family:var(--mono); font-size:0.8rem; }
+.report-voter { color:var(--accent); }
+.report-arrow { color:var(--text-dim); font-size:0.7rem; }
+.report-target { color:var(--red); }
+.report-reason { font-size:0.85rem; color:var(--text); line-height:1.5; font-style:italic; border-left:2px solid var(--accent); padding-left:10px; margin-left:4px; }
+
 /* ── KEYFRAMES ──────────────────────────────────────────────────── */
 @keyframes pulseDot   { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.45;transform:scale(0.65)} }
 @keyframes pulseBorder{ 0%,100%{box-shadow:0 0 0 rgba(255,50,50,0)} 50%{box-shadow:0 0 18px rgba(255,50,50,0.35)} }
@@ -288,3 +311,4 @@ html, body, #root {
 @keyframes msgSlide   { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:none} }
 @keyframes panelSlideUp{ from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
 @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+

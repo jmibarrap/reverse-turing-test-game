@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { GameState } from '../types'
+import { gameApi } from '../api/gameApi'
 
 interface Props {
   gameState: GameState
@@ -7,6 +9,8 @@ interface Props {
 
 export default function GameOverScreen({ gameState, onPlayAgain }: Props) {
   const isWin = gameState.winner === 'human'
+  const [reportData, setReportData] = useState<any>(null)
+  const [showReport, setShowReport] = useState(false)
 
   const downloadHistory = () => {
     const data = {
@@ -20,6 +24,18 @@ export default function GameOverScreen({ gameState, onPlayAgain }: Props) {
     const a = document.createElement('a')
     a.href = url; a.download = `turing-arena-${gameState.gameId.slice(0, 8)}.json`; a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleShowReport = async () => {
+    try {
+      if (!reportData) {
+        const data = await gameApi.getReport()
+        setReportData(data)
+      }
+      setShowReport(true)
+    } catch (err) {
+      console.error('Failed to load report:', err)
+    }
   }
 
   return (
@@ -93,11 +109,58 @@ export default function GameOverScreen({ gameState, onPlayAgain }: Props) {
           <button className="go-btn-primary" onClick={onPlayAgain}>
             JUGAR OTRA VEZ
           </button>
+          <button className="go-btn-secondary" onClick={handleShowReport}>
+            👁 VER INFORME DE VOTACIONES
+          </button>
           <button className="go-btn-secondary" onClick={downloadHistory}>
-            ⬇ HISTORIAL
+            ⬇ HISTORIAL JSON
           </button>
         </div>
       </div>
+
+      {showReport && reportData && (
+        <div className="report-modal-overlay">
+          <div className="report-modal-content">
+            <div className="report-modal-header">
+              <h2 className="report-modal-title">INFORME DETALLADO DE VOTACIONES</h2>
+              <button className="report-close-btn" onClick={() => setShowReport(false)}>×</button>
+            </div>
+            <div className="report-modal-body">
+              {reportData.rounds.map((r: any) => (
+                <div key={r.round} className="report-round-card">
+                  <div className="report-round-header">
+                    <span>RONDA {r.round}</span>
+                    <span className="report-round-elim">ELIMINADO: {r.eliminated}</span>
+                  </div>
+                  <div className="report-question">
+                    <strong>Tema:</strong> {r.question}
+                  </div>
+                  
+                  <div className="report-answers-title">RESPUESTAS ({r.answers.length})</div>
+                  {r.answers.map((a: any, i: number) => (
+                    <div key={i} className="report-answer-item" style={{ opacity: a.playerId === r.eliminated ? 0.4 : 1 }}>
+                      <div className="report-answer-name">{a.playerId}</div>
+                      <div>{a.text}</div>
+                    </div>
+                  ))}
+                  
+                  <div className="report-votes-title">VOTOS Y RAZONAMIENTOS ({r.votes.length})</div>
+                  {r.votes.map((v: any, i: number) => (
+                    <div key={i} className="report-vote-item">
+                      <div className="report-vote-header">
+                        <span className="report-voter">{v.voterId}</span>
+                        <span className="report-arrow">→</span>
+                        <span className="report-target">{v.targetId}</span>
+                      </div>
+                      <div className="report-reason">"{v.reasoning}"</div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

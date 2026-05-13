@@ -287,6 +287,7 @@ async function callAIVote(
       confidence: 0.5,
       privateReason: 'Sin opciones elegibles',
       isFallback: true,
+      round: state.currentRound,
     };
   }
 
@@ -298,6 +299,7 @@ async function callAIVote(
       confidence: 0.4 + Math.random() * 0.5,
       privateReason: DEMO_VOTE_REASONS[Math.floor(Math.random() * DEMO_VOTE_REASONS.length)],
       isFallback: false,
+      round: state.currentRound,
     };
   }
 
@@ -326,6 +328,7 @@ async function callAIVote(
         targetId: parsed.targetId,
         confidence: typeof parsed.confidence === 'number' ? Math.min(1, Math.max(0, parsed.confidence)) : 0.5,
         privateReason: typeof parsed.privateReason === 'string' ? parsed.privateReason : '',
+        round: state.currentRound,
       };
     }
   } catch (err) {
@@ -349,6 +352,7 @@ Devuelve SOLO: {"targetId": "uno_de_los_ids", "confidence": 0.6, "privateReason"
         confidence: 0.5,
         privateReason: 'Voto recuperado tras reintento',
         isFallback: true,
+        round: state.currentRound,
       };
     }
   } catch (err) {
@@ -364,6 +368,7 @@ Devuelve SOLO: {"targetId": "uno_de_los_ids", "confidence": 0.6, "privateReason"
     confidence: 0.3,
     privateReason: 'Fallback: error en LLM',
     isFallback: true,
+    round: state.currentRound,
   };
 }
 

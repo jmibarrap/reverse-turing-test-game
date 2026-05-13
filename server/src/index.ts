@@ -143,6 +143,30 @@ app.post('/api/game/reset', (req: Request, res: Response) => {
   return res.json({ ok: true });
 });
 
+// ─── GET /api/game/report ────────────────────────────────────────────────────
+app.get('/api/game/report', (req: Request, res: Response) => {
+  const state = getGameState();
+  if (!state) return res.status(404).json({ error: 'No hay partida activa' });
+
+  const rounds = state.roundResults.map((r) => {
+    const roundTranscript = state.transcript.filter(m => m.round === r.round);
+    const roundVotes = state.votes.filter(v => v.round === r.round);
+    return {
+      round: r.round,
+      question: state.topic,
+      answers: roundTranscript.map(m => ({ playerId: m.playerId, text: m.message })),
+      votes: roundVotes.map(v => ({ voterId: v.voterId, targetId: v.targetId, reasoning: v.privateReason })),
+      eliminated: r.eliminatedId || 'Ninguno (empate)',
+    };
+  });
+
+  return res.json({
+    result: state.phase === 'gameover' ? (state.winner === 'human' ? 'victory' : 'defeat') : 'ongoing',
+    rounds,
+    humanPlayerId: state.players.find(p => p.isHuman)?.id,
+  });
+});
+
 // ─── 404 handler ─────────────────────────────────────────────────────────────
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
